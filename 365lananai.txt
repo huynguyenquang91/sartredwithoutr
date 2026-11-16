@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Cấu hình iOS Web App (PWA) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="365 Ân Ái">
+    <meta name="theme-color" content="#08080a">
+    
+    <title>365 lần ân ái — L'existence précède l'essence</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cormorant Garamond (Triết học, cổ điển) & Space Mono (Hiện sinh, thời gian) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tone.js tạo âm hưởng trầm lắng khi chạm -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        void: '#08080a',
+                        parchment: '#e6e1d6',
+                        muted: '#7c7870',
+                        crimson: '#6b2d2c',
+                        gold: '#b89f72'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Thiết lập cơ bản cho iOS & Triết học hiện sinh */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: #08080a;
+            color: #e6e1d6;
+            font-family: 'Cormorant Garamond', serif;
+            overflow: hidden;
+            height: 100dvh;
+            width: 100vw;
+            position: fixed;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* Hiệu ứng nhiễu hạt (Film Grain) tạo chiều sâu tâm lý */
+        .film-grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.045;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Quầng sáng hư vô phía sau */
+        .ambient-void {
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(107, 45, 44, 0.16) 0%, rgba(184, 159, 114, 0.05) 45%, rgba(8, 8, 10, 0) 70%);
+            filter: blur(40px);
+            pointer-events: none;
+            transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: breathe 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes breathe {
+            0% { transform: scale(0.92) translateY(5px); opacity: 0.6; }
+            100% { transform: scale(1.12) translateY(-5px); opacity: 1; }
+        }
+
+        /* Vòng tròn nút bấm trung tâm */
+        .sartre-btn {
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 
+                0 0 50px rgba(0, 0, 0, 0.9),
+                inset 0 0 25px rgba(230, 225, 214, 0.03);
+        }
+
+        .sartre-btn:active {
+            transform: scale(0.94);
+            border-color: rgba(184, 159, 114, 0.6);
+            box-shadow: 
+                0 0 60px rgba(107, 45, 44, 0.35),
+                inset 0 0 35px rgba(184, 159, 114, 0.12);
+        }
+
+        /* Sóng lan tỏa khi chạm */
+        @keyframes rippleExpand {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1.75);
+                opacity: 0;
+            }
+        }
+
+        .ripple-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            border: 1px solid rgba(230, 225, 214, 0.35);
+            pointer-events: none;
+            animation: rippleExpand 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Chữ 'r' tan biến thành Sated */
+        .letter-r {
+            display: inline-block;
+            transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            color: #b89f72;
+        }
+
+        .sartre-btn.activated .letter-r,
+        .sartre-btn:active .letter-r {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.5);
+            width: 0;
+            margin: 0;
+        }
+
+        /* Hiệu ứng chuyển số */
+        .number-transition {
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease, filter 0.45s ease;
+        }
+
+        .number-blur {
+            opacity: 0.15;
+            transform: scale(0.94) translateY(6px);
+            filter: blur(4px);
+        }
+
+        /* Tùy chỉnh thanh cuộn nhật ký */
+        .custom-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(230, 225, 214, 0.15);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between items-center relative select-none">
+
+    <!-- Lớp phủ Film Grain cổ điển -->
+    <div class="film-grain"></div>
+
+    <!-- Quầng sáng trung tâm -->
+    <div id="ambientOrb" class="ambient-void top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+    <!-- HEADER: Tiêu đề & Thanh trạng thái triết học -->
+    <header class="w-full max-w-md px-6 pt-5 pb-2 flex flex-col items-center z-20">
+        <div class="w-full flex justify-between items-center text-[10px] font-mono tracking-[0.25em] text-muted uppercase mb-3">
+            <button id="soundToggleBtn" onclick="toggleSound()" class="flex items-center gap-1.5 py-1 px-2 rounded border border-transparent hover:border-white/10 transition-colors">
+                <span id="soundDot" class="w-1.5 h-1.5 rounded-full bg-gold/70"></span>
+                <span id="soundText">ÂM: BẬT</span>
+            </button>
+            <span>L'ÊTRE ET LE NÉANT</span>
+            <button onclick="openModal('iosGuideModal')" class="py-1 px-2 rounded border border-transparent hover:border-white/10 transition-colors">
+                iOS APP
+            </button>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-light tracking-[0.22em] uppercase text-parchment/90 text-center">
+            365 Lần Ân Ái
+        </h1>
+        <div class="w-12 h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent mt-2"></div>
+    </header>
+
+    <!-- MAIN: Bộ đếm ngược từ 365 về 0 & Nút bấm trung tâm "Sartred without r" -->
+    <main class="flex-1 w-full max-w-md px-6 flex flex-col items-center justify-center relative z-20 my-auto">
+        
+        <!-- Khu vực hiển thị Con Số Hiện Sinh -->
+        <div class="flex flex-col items-center mb-6 sm:mb-8">
+            <span class="font-mono text-[10px] tracking-[0.3em] text-muted uppercase mb-1">
+                Phần còn lại của hữu thể
+            </span>
+            
+            <div class="relative flex items-baseline justify-center">
+                <span id="counterDisplay" class="number-transition text-7xl sm:text-8xl font-light tracking-tight text-parchment leading-none">
+                    365
+                </span>
+            </div>
+
+            <!-- Tiến trình mỏng như sợi tơ -->
+            <div class="w-40 h-[1px] bg-white/10 mt-4 relative overflow-hidden">
+                <div id="progressBar" class="absolute left-0 top-0 bottom-0 bg-gold/60 transition-all duration-700" style="width: 100%"></div>
+            </div>
+            
+            <div class="flex items-center gap-3 mt-2 font-mono text-[10px] text-muted/80 tracking-widest">
+                <span id="completedText">ĐÃ QUA: 0</span>
+                <span>•</span>
+                <span id="percentageText">100.0% HƯ VÔ</span>
+            </div>
+        </div>
+
+        <!-- NÚT TRUNG TÂM: "Sartred without r" -->
+        <div class="relative flex items-center justify-center my-2">
+            <!-- Vòng trang trí mảnh bên ngoài -->
+            <div class="absolute w-56 h-56 sm:w-64 sm:h-64 rounded-full border border-white/[0.04] pointer-events-none"></div>
+            <div class="absolute w-48 h-48 sm:w-56 sm:h-56 rounded-full border border-dashed border-gold/[0.12] pointer-events-none animate-[spin_90s_linear_infinite]"></div>
+
+            <button 
+                id="sartreButton" 
+                onclick="handleSartreClick(event)"
+                aria-label="Sartred without r"
+                class="sartre-btn w-44 h-44 sm:w-52 sm:h-52 rounded-full bg-[#0d0d11]/90 backdrop-blur-md border border-parchment/20 flex flex-col items-center justify-center px-4 text-center group focus:outline-none"
+            >
+                <span class="font-mono text-[9px] uppercase tracking-[0.28em] text-muted/70 mb-2 transition-colors group-hover:text-gold/80">
+                    Chạm để hiện sinh
+                </span>
+
+                <!-- Dòng chữ chính: Sartred without r -->
+                <span class="text-xl sm:text-2xl italic font-normal tracking-wider text-parchment leading-snug">
+                    Sa<span class="letter-r">r</span>tred <span class="text-base sm:text-lg not-italic font-light text-parchment/75 block mt-0.5">without r</span>
+                </span>
+
+                <div class="w-6 h-[1px] bg-gold/30 my-2.5 transition-all duration-500 group-hover:w-12 group-hover:bg-gold/60"></div>
+
+                <!-- Giải nghĩa triết học tinh tế: Sartred - r = Sated -->
+                <span id="satedSubtext" class="font-mono text-[9px] tracking-[0.2em] text-gold/75 uppercase">
+                    [ Sated · Thỏa hiệp ]
+                </span>
+            </button>
+        </div>
+
+        <!-- Trích dẫn triết học thay đổi sau mỗi lần ân ái -->
+        <div class="mt-6 sm:mt-8 min-h-[4.5rem] flex flex-col items-center justify-center text-center px-4 max-w-xs">
+            <p id="quoteText" class="text-base sm:text-lg italic text-parchment/85 font-light leading-relaxed transition-opacity duration-500">
+                “Tồn tại có trước bản chất. Giữa hai cơ thể là một khoảng trống chỉ có thể lấp đầy bằng sự lựa chọn.”
+            </p>
+            <span id="quoteAuthor" class="font-mono text-[9px] tracking-[0.22em] text-muted uppercase mt-1.5">
+                — Jean-Paul Sartre
+            </span>
+        </div>
+
+    </main>
+
+    <!-- FOOTER: Điều khiển Nhật ký, Hoàn tác & Khởi tạo lại -->
+    <footer class="w-full max-w-md px-6 pb-6 pt-2 flex flex-col items-center z-20">
+        <div class="w-full flex items-center justify-between border-t border-white/10 pt-4 text-xs font-mono tracking-[0.18em] text-muted">
+            <button onclick="undoLastAction()" id="undoBtn" class="py-2 px-3 rounded hover:text-parchment hover:bg-white/5 transition-all disabled:opacity-25 disabled:pointer-events-none">
+                ↺ HOÀN TÁC
+            </button>
+
+            <button onclick="openModal('journalModal')" class="py-2 px-4 rounded border border-white/10 text-parchment/90 hover:border-gold/40 transition-all flex items-center gap-2">
+                <span>DẤU VẾT</span>
+                <span id="logCountBadge" class="text-[10px] px-1.5 py-0.2 bg-white/10 rounded-full text-gold">0</span>
+            </button>
+
+            <button onclick="openModal('resetModal')" class="py-2 px-3 rounded hover:text-red-300/80 hover:bg-white/5 transition-all">
+                TÁI SINH
+            </button>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: NHẬT KÝ HIỆN SINH (DẤU VẾT THỜI GIAN) -->
+    <div id="journalModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/80 backdrop-blur-md p-6 opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-sm bg-[#0e0e12] border border-white/15 rounded-2xl p-6 flex flex-col max-h-[78vh] shadow-2xl">
+            <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+                <div>
+                    <h2 class="text-xl font-normal tracking-widest uppercase text-parchment">Dấu Vết Ân Ái</h2>
+                    <p class="font-mono text-[10px] text-muted tracking-wider">Biên niên sử của những lần chạm vào hư vô</p>
+                </div>
+                <button onclick="closeModal('journalModal')" class="text-muted hover:text-parchment p-2 font-mono text-sm">✕</button>
+            </div>
+
+            <div id="journalList" class="flex-1 overflow-y-auto custom-scroll space-y-2.5 pr-1">
+                <!-- Danh sách lịch sử được render bằng JS -->
+            </div>
+
+            <div class="border-t border-white/10 pt-4 mt-4 flex justify-between items-center text-[11px] font-mono text-muted">
+                <span id="firstEncounterText">Khởi nguyên: Chưa bắt đầu</span>
+                <button onclick="closeModal('journalModal')" class="text-gold uppercase tracking-widest py-1 px-3 border border-gold/30 rounded">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: XÁC NHẬN TÁI SINH (RESET VỀ 365) -->
+    <div id="resetModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/80 backdrop-blur-md p-6 opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-xs bg-[#0e0e12] border border-white/15 rounded-2xl p-6 text-center shadow-2xl">
+            <p class="font-mono text-[10px] tracking-[0.25em] text-gold uppercase mb-2">Sự trở lại vĩnh cửu</p>
+            <h3 class="text-2xl font-light text-parchment mb-3">Khởi tạo lại 365 lần?</h3>
+            <p class="text-sm text-muted italic mb-6 leading-relaxed">
+                “Phải tưởng tượng Sisyphus đang hạnh phúc.” Mọi dấu vết cũ sẽ khép lại để bắt đầu một vòng lặp 365 mới.
+            </p>
+            <div class="flex gap-3 font-mono text-xs tracking-widest">
+                <button onclick="closeModal('resetModal')" class="flex-1 py-2.5 rounded-lg border border-white/15 text-muted hover:text-parchment">
+                    HỦY
+                </button>
+                <button onclick="confirmReset()" class="flex-1 py-2.5 rounded-lg bg-crimson/80 border border-red-400/30 text-parchment hover:bg-crimson">
+                    TÁI SINH
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: HƯỚNG DẪN CÀI ĐẶT TRÊN iOS -->
+    <div id="iosGuideModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/80 backdrop-blur-md p-6 opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-xs bg-[#0e0e12] border border-white/15 rounded-2xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+                <h3 class="text-lg tracking-widest uppercase text-parchment">Cài đặt trên iPhone</h3>
+                <button onclick="closeModal('iosGuideModal')" class="text-muted hover:text-parchment font-mono text-sm">✕</button>
+            </div>
+            <div class="space-y-3 text-sm text-parchment/80 leading-relaxed">
+                <p>Ứng dụng này được thiết kế để hoạt động toàn màn hình trên iOS và tự động lưu dữ liệu ngay trên thiết bị của bạn:</p>
+                <ol class="list-decimal list-inside space-y-2 text-muted font-mono text-xs">
+                    <li>Mở trang này bằng trình duyệt <strong class="text-parchment">Safari</strong> trên iOS.</li>
+                    <li>Chạm vào nút <strong class="text-parchment">Chia sẻ (Share)</strong> ở thanh công cụ dưới cùng.</li>
+                    <li>Chọn <strong class="text-parchment">Thêm vào Màn hình chính (Add to Home Screen)</strong>.</li>
+                </ol>
+                <p class="italic text-xs text-gold/80 pt-1">
+                    Chơi chữ triết học: "Sartred" (Jean-Paul Sartre) khi bỏ đi chữ "r" thứ nhất sẽ trở thành "Sated" (Trạng thái thỏa mãn, lấp đầy cơn khát hiện sinh).
+                </p>
+            </div>
+            <button onclick="closeModal('iosGuideModal')" class="w-full mt-5 py-2.5 font-mono text-xs tracking-widest uppercase rounded-lg border border-gold/40 text-gold">
+                Đã hiểu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- DỮ LIỆU TRIẾT HỌC HIỆN SINH & ÂN ÁI ---
+        const philosophicalQuotes = [
+            {
+                text: "“Tồn tại có trước bản chất. Giữa hai cơ thể là một khoảng trống chỉ có thể lấp đầy bằng sự lựa chọn.”",
+                author: "— Jean-Paul Sartre"
+            },
+            {
+                text: "“Sự dịu dàng của xác thịt là bằng chứng duy nhất cho thấy chúng ta không hoàn toàn cô độc trong vũ trụ.”",
+                author: "— Simone de Beauvoir"
+            },
+            {
+                text: "“Sartred without r — Sated: khi khát vọng hiện sinh được thỏa hiệp trong một khoảnh khắc vĩnh cửu.”",
+                author: "— Mệnh đề Ân Ái"
+            },
+            {
+                text: "“Giữa mùa đông lạnh giá của hư vô, tôi cuối cùng cũng nhận ra bên trong mình có một mùa hè bất khả chiến bại.”",
+                author: "— Albert Camus"
+            },
+            {
+                text: "“Ân ái là nỗ lực tuyệt vọng nhưng đẹp đẽ nhất để chiếm hữu tự do của một kẻ khác mà không làm mất đi tự do ấy.”",
+                author: "— L'Être et le Néant"
+            },
+            {
+                text: "“Mỗi lần chạm là một lần khẳng định sự sống trước cái chết đang đếm ngược từng ngày.”",
+                author: "— Søren Kierkegaard"
+            },
+            {
+                text: "“Khi con số lùi dần về 0, không phải chúng ta đang mất đi, mà đang biến khả thể thành hiện thực.”",
+                author: "— Hiện tượng học"
+            },
+            {
+                text: "“Trong cái ôm siết, thời gian ngừng trôi; chỉ còn lại ý thức thuần khiết đang tự chiêm ngưỡng chính mình.”",
+                author: "— Maurice Merleau-Ponty"
+            },
+            {
+                text: "“Con người bị kết án phải tự do; và trong tình yêu, anh ta tự nguyện trao bản án đó cho người tình.”",
+                author: "— Jean-Paul Sartre"
+            },
+            {
+                text: "“Không có định mệnh nào không thể vượt qua bằng sự gắn kết nồng nhiệt của hai hữu thể.”",
+                author: "— Albert Camus"
+            }
+        ];
+
+        // --- QUẢN LÝ TRẠNG THÁI (LOCAL STORAGE CHO iOS) ---
+        const STORAGE_KEY = 'sartred_365_state_v1';
+        const INITIAL_COUNT = 365;
+
+        let state = {
+            remaining: INITIAL_COUNT,
+            history: [], // Lưu danh sách timestamp mỗi lần bấm
+            soundEnabled: true,
+            quoteIndex: 0
+        };
+
+        // Khởi tạo âm thanh bằng Tone.js
+        let synth = null;
+        let isAudioInitialized = false;
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    state = { ...state, ...parsed };
+                }
+            } catch (e) {
+                console.warn("Không thể đọc bộ nhớ cục bộ:", e);
+            }
+            updateUI(false);
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.warn("Không thể lưu bộ nhớ cục bộ:", e);
+            }
+        }
+
+        // --- HỆ THỐNG ÂM THANH TRẦM LẮNG (AMBIENT CHORD) ---
+        async function playExistentialTone(remainingCount) {
+            if (!state.soundEnabled) return;
+            try {
+                if (!isAudioInitialized && typeof Tone !== 'undefined') {
+                    await Tone.start();
+                    synth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: "sine" },
+                        envelope: {
+                            attack: 0.08,
+                            decay: 1.4,
+                            sustain: 0.1,
+                            release: 2.5
+                        }
+                    }).toDestination();
+                    synth.volume.value = -14;
+                    isAudioInitialized = true;
+                }
+
+                if (synth) {
+                    // Hợp âm trầm ấm thay đổi nhẹ theo số lần còn lại
+                    const chordSets = [
+                        ["A2", "E3", "A3", "C4"],
+                        ["F2", "C3", "A3", "E4"],
+                        ["D2", "A2", "F3", "C4"],
+                        ["E2", "B2", "G3", "D4"]
+                    ];
+                    const chosenChord = chordSets[remainingCount % chordSets.length];
+                    synth.triggerAttackRelease(chosenChord, "2n");
+                }
+            } catch (err) {
+                // Bỏ qua nếu iOS chặn tự phát âm thanh
+            }
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            saveState();
+            updateSoundUI();
+        }
+
+        function updateSoundUI() {
+            const dot = document.getElementById('soundDot');
+            const text = document.getElementById('soundText');
+            if (state.soundEnabled) {
+                dot.className = "w-1.5 h-1.5 rounded-full bg-gold";
+                text.textContent = "ÂM: BẬT";
+            } else {
+                dot.className = "w-1.5 h-1.5 rounded-full bg-muted/40";
+                text.textContent = "ÂM: TẮT";
+            }
+        }
+
+        // --- XỬ LÝ SỰ KIỆN BẤM NÚT "SARTRED WITHOUT R" ---
+        function handleSartreClick(event) {
+            const btn = document.getElementById('sartreButton');
+
+            // Hiệu ứng chữ 'r' biến mất tạm thời tạo chữ "Sated"
+            btn.classList.add('activated');
+            setTimeout(() => {
+                btn.classList.remove('activated');
+            }, 900);
+
+            // Tạo vòng sóng lan tỏa
+            createRippleEffect(btn);
+
+            // Rung phản hồi nhẹ nếu trình duyệt hỗ trợ
+            if (navigator.vibrate) {
+                navigator.vibrate(18);
+            }
+
+            // Nếu đã về 0, hiển thị thông điệp viên mãn
+            if (state.remaining <= 0) {
+                playExistentialTone(0);
+                showZeroCompletionQuote();
+                return;
+            }
+
+            // Trừ 1 lần
+            state.remaining = Math.max(0, state.remaining - 1);
+            
+            // Lưu dấu vết thời gian
+            const now = new Date();
+            state.history.unshift({
+                number: INITIAL_COUNT - state.remaining,
+                remainingAfter: state.remaining,
+                timestamp: now.toISOString()
+            });
+
+            // Đổi trích dẫn triết học
+            state.quoteIndex = (state.quoteIndex + 1) % philosophicalQuotes.length;
+
+            // Phát âm thanh & lưu lại
+            playExistentialTone(state.remaining);
+            saveState();
+            updateUI(true);
+        }
+
+        function createRippleEffect(container) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple-ring';
+            container.appendChild(ripple);
+            setTimeout(() => {
+                ripple.remove();
+            }, 1400);
+        }
+
+        // --- CẬP NHẬT GIAO DIỆN ---
+        function updateUI(animateNumber = false) {
+            const counterEl = document.getElementById('counterDisplay');
+            const progressEl = document.getElementById('progressBar');
+            const completedEl = document.getElementById('completedText');
+            const percentageEl = document.getElementById('percentageText');
+            const quoteTextEl = document.getElementById('quoteText');
+            const quoteAuthorEl = document.getElementById('quoteAuthor');
+            const undoBtn = document.getElementById('undoBtn');
+            const badgeEl = document.getElementById('logCountBadge');
+            const satedSubtext = document.getElementById('satedSubtext');
+
+            const completed = INITIAL_COUNT - state.remaining;
+            const percentRemaining = ((state.remaining / INITIAL_COUNT) * 100).toFixed(1);
+
+            if (animateNumber) {
+                counterEl.classList.add('number-blur');
+                setTimeout(() => {
+                    counterEl.textContent = state.remaining;
+                    counterEl.classList.remove('number-blur');
+                }, 180);
+            } else {
+                counterEl.textContent = state.remaining;
+            }
+
+            // Thanh tiến trình
+            progressEl.style.width = `${percentRemaining}%`;
+            completedEl.textContent = `ĐÃ QUA: ${completed}`;
+            percentageEl.textContent = `${percentRemaining}% HƯ VÔ`;
+            badgeEl.textContent = state.history.length;
+
+            // Nút hoàn tác
+            undoBtn.disabled = state.history.length === 0;
+
+            // Cập nhật câu trích dẫn
+            if (state.remaining === 0) {
+                showZeroCompletionQuote();
+                satedSubtext.textContent = "[ SATED · VIÊN MÃN TUYỆT ĐỐI ]";
+            } else {
+                const currentQuote = philosophicalQuotes[state.quoteIndex % philosophicalQuotes.length];
+                quoteTextEl.style.opacity = '0';
+                setTimeout(() => {
+                    quoteTextEl.textContent = currentQuote.text;
+                    quoteAuthorEl.textContent = currentQuote.author;
+                    quoteTextEl.style.opacity = '1';
+                }, 220);
+                satedSubtext.textContent = `[ Sated · Lần thứ ${completed} ]`;
+            }
+
+            updateSoundUI();
+            renderJournalList();
+        }
+
+        function showZeroCompletionQuote() {
+            const quoteTextEl = document.getElementById('quoteText');
+            const quoteAuthorEl = document.getElementById('quoteAuthor');
+            quoteTextEl.textContent = "“Con số 0 không phải là sự kết thúc, mà là nơi hai tồn tại hòa làm một bản thể trọn vẹn.”";
+            quoteAuthorEl.textContent = "— 365 Lần Viên Mãn";
+        }
+
+        // --- HOÀN TÁC & KHỞI TẠO LẠI ---
+        function undoLastAction() {
+            if (state.history.length === 0 || state.remaining >= INITIAL_COUNT) return;
+            state.history.shift();
+            state.remaining = Math.min(INITIAL_COUNT, state.remaining + 1);
+            saveState();
+            updateUI(true);
+        }
+
+        function confirmReset() {
+            state.remaining = INITIAL_COUNT;
+            state.history = [];
+            state.quoteIndex = 0;
+            saveState();
+            updateUI(true);
+            closeModal('resetModal');
+        }
+
+        // --- RENDER NHẬT KÝ DẤU VẾT ---
+        function renderJournalList() {
+            const listEl = document.getElementById('journalList');
+            const firstEncounterEl = document.getElementById('firstEncounterText');
+
+            if (!state.history || state.history.length === 0) {
+                listEl.innerHTML = `
+                    <div class="py-12 text-center text-muted italic text-sm">
+                        Chưa có dấu vết nào được ghi nhận.<br>
+                        Hãy chạm vào "Sartred without r" để khởi đầu.
+                    </div>
+                `;
+                firstEncounterEl.textContent = "Khởi nguyên: Chưa bắt đầu";
+                return;
+            }
+
+            // Hiển thị ngày bắt đầu đầu tiên
+            const firstItem = state.history[state.history.length - 1];
+            const firstDate = new Date(firstItem.timestamp);
+            firstEncounterEl.textContent = `Khởi nguyên: ${firstDate.toLocaleDateString('vi-VN')}`;
+
+            listEl.innerHTML = state.history.map((item) => {
+                const dateObj = new Date(item.timestamp);
+                const dateStr = dateObj.toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                const timeStr = dateObj.toLocaleTimeString('vi-VN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="flex items-center justify-between py-2.5 px-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono text-xs text-gold">#${item.number}</span>
+                            <div>
+                                <div class="text-sm text-parchment">Lần ân ái thứ ${item.number}</div>
+                                <div class="font-mono text-[10px] text-muted">${dateStr} · ${timeStr}</div>
+                            </div>
+                        </div>
+                        <div class="font-mono text-xs text-muted">
+                            Còn ${item.remainingAfter}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- ĐIỀU KHIỂN MODAL ---
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            if (modalId === 'journalModal') renderJournalList();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+            });
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Khởi chạy khi tải trang
+        window.onload = function() {
+            loadState();
+        };
+    </script>
+</body>
+</html>

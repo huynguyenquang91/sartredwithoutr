@@ -1,5 +1,5 @@
 // Cache-first cho app shell, runtime-cache cho CDN (Tailwind, Tone.js, fonts)
-const CACHE = '365-an-ai-v3';
+const CACHE = '365-an-ai-v4';
 const SHELL = ['./', 'index.html', 'manifest.json', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', (e) => {
